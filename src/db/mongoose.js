@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const keys = require("../../config/keys");
+require("dotenv").config();
 
-// mongoose.connect(
-//     `mongodb+srv://${keys.CONNECT_NAME}:${keys.CONNECT_PASS}@freecluster.nk9f1.mongodb.net/<INSERT-COLLECTION-NAME>?retryWrites=true&w=majority`
-// );
+mongoose.connect(
+    `mongodb+srv://${process.env.CONNECT_NAME}:${process.env.CONNECT_PASS}@freecluster.nk9f1.mongodb.net/RoguelikeGameUsers?retryWrites=true&w=majority`
+);
