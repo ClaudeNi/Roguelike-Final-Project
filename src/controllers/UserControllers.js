@@ -1,5 +1,13 @@
-// const userModel = require("../model/user");
+const userModel = require("../model/user");
 
-// module.exports = {
+function addUser() {}
 
-// };
+function getSaveData() {}
+
+function uploadSaveData() {}
+
+module.exports = {
+    addUser,
+    getSaveData,
+    uploadSaveData,
+};
