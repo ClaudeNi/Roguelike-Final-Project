@@ -15,10 +15,12 @@ const ENEMY_COUNT_INCREASE_PER_LEVEL = 1;
 function generate_world(level) {
     cur_level = level;
     let rooms_data = generate_room_data();
-    let spawn_locations = generate_rooms(rooms_data);
-    let world_data = generate_objects(spawn_locations);
-    return world_data;
+    console.log(rooms_data);
+    // let spawn_locations = generate_rooms(rooms_data);
+    // let world_data = generate_objects(spawn_locations);
+    // return world_data;
 }
+generate_world(1);
 
 function generate_room_data() {
     let room_count =
@@ -42,10 +44,9 @@ function generate_room_data() {
             type: rand_room_type,
             coords: rand_room_loc,
         };
-        generate_rooms.push(rand_room_loc);
-        possible_room_locations += get_available_room_slots(
-            rooms_data,
-            rand_room_loc
+        generated_rooms.push(rand_room_loc); // never used again?
+        possible_room_locations.push(
+            get_available_room_slots(rooms_data, rand_room_loc)
         );
     }
 
@@ -57,18 +58,18 @@ function generate_room_data() {
         type: "endRoom",
         coords: rand_room_loc,
     };
-    if (rooms_data.length < 5) {
-        console.log("error");
-    }
+    // if (rooms_data.length < 5) {
+    //     console.log("error");
+    // }
 
     return rooms_data;
 }
 
 function select_rand_room_location(possible_room_locations, rooms_data) {
-    let rand_ind = ROT.RNG.getUniformInt(0, possible_room_locations.length - 1);
+    let rand_ind = Math.floor(Math.random() * possible_room_locations.length);
     let rand_room_loc = possible_room_locations[rand_ind];
     possible_room_locations.splice(rand_ind, 1);
-    if (rooms_data.includes(rand_room_loc)) {
+    if (rooms_data.hasOwnProperty(rand_room_loc.toString())) {
         rand_room_loc = select_rand_room_location(
             possible_room_locations,
             rooms_data
@@ -85,12 +86,12 @@ function get_available_room_slots(rooms, coords) {
         [coords[0] + 0, coords[1] - 1],
         [coords[0] - 1, coords[1] + 0],
     ];
-
-    for (let coord in ava_rooms) {
-        if (!rooms_data.includes(coord)) {
+    for (let coord of ava_rooms) {
+        if (!rooms.hasOwnProperty(coord.toString())) {
             empty_available_rooms.push(coord);
         }
     }
+
     return empty_available_rooms;
 }
 
