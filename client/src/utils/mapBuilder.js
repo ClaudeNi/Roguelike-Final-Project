@@ -15,8 +15,7 @@ const ENEMY_COUNT_INCREASE_PER_LEVEL = 1;
 function generate_world(level) {
     cur_level = level;
     let rooms_data = generate_room_data();
-    console.log(rooms_data);
-    // let spawn_locations = generate_rooms(rooms_data);
+    let spawn_locations = generate_rooms(rooms_data);
     // let world_data = generate_objects(spawn_locations);
     // return world_data;
 }
@@ -28,7 +27,7 @@ function generate_room_data() {
     let rooms_data = {
         "0,0": {
             type: "startRoom",
-            coords: "0,0",
+            coords: [0, 0],
         },
     };
 
@@ -58,11 +57,7 @@ function generate_room_data() {
         type: "endRoom",
         coords: rand_room_loc,
     };
-    // if (rooms_data.length < 5) {
-    //     console.log("error");
-    // }
 
-    // console.log(possible_room_locations);
     return rooms_data;
 }
 
@@ -103,7 +98,7 @@ function generate_rooms(rooms) {
     };
     let ind = 0;
     let walkable_floor_tiles = {};
-    for (let room_data in Object.values(rooms)) {
+    for (let room_data of Object.values(rooms)) {
         let only_do_walls = ind === 0;
         ind++;
         let coords = room_data.coords;
@@ -111,6 +106,8 @@ function generate_rooms(rooms) {
         let y_pos = coords[1] * ROOM_SIZE;
         let type = room_data.type;
     }
+
+    return spawn_locations;
 }
 
 function generate_objects(spawn) {}
