@@ -45,7 +45,7 @@ function generate_room_data() {
             coords: rand_room_loc,
         };
         generated_rooms.push(rand_room_loc); // never used again?
-        possible_room_locations.push(
+        possible_room_locations = possible_room_locations.concat(
             get_available_room_slots(rooms_data, rand_room_loc)
         );
     }
@@ -62,6 +62,7 @@ function generate_room_data() {
     //     console.log("error");
     // }
 
+    // console.log(possible_room_locations);
     return rooms_data;
 }
 
@@ -69,7 +70,7 @@ function select_rand_room_location(possible_room_locations, rooms_data) {
     let rand_ind = Math.floor(Math.random() * possible_room_locations.length);
     let rand_room_loc = possible_room_locations[rand_ind];
     possible_room_locations.splice(rand_ind, 1);
-    if (rooms_data.hasOwnProperty(rand_room_loc.toString())) {
+    if (rooms[rand_room_loc.join(",")] !== undefined) {
         rand_room_loc = select_rand_room_location(
             possible_room_locations,
             rooms_data
@@ -81,17 +82,16 @@ function select_rand_room_location(possible_room_locations, rooms_data) {
 function get_available_room_slots(rooms, coords) {
     let empty_available_rooms = [];
     let ava_rooms = [
-        [coords[0] + 0, coords[1] + 1],
-        [coords[0] + 1, coords[1] + 0],
-        [coords[0] + 0, coords[1] - 1],
-        [coords[0] - 1, coords[1] + 0],
+        [parseInt(coords[0]) + 0, parseInt(coords[1]) + 1],
+        [parseInt(coords[0]) + 1, parseInt(coords[1]) + 0],
+        [parseInt(coords[0]) + 0, parseInt(coords[1]) - 1],
+        [parseInt(coords[0]) - 1, parseInt(coords[1]) + 0],
     ];
     for (let coord of ava_rooms) {
-        if (!rooms.hasOwnProperty(coord.toString())) {
+        if (rooms[coord.join(",")] === undefined) {
             empty_available_rooms.push(coord);
         }
     }
-
     return empty_available_rooms;
 }
 
