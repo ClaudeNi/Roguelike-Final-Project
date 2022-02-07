@@ -1,4 +1,4 @@
-// S = Spawn
+// S = Player Spawn
 // W = Wall
 // A = Air
 // D = Down Stairs
