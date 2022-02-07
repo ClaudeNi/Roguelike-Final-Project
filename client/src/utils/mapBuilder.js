@@ -19,7 +19,6 @@ function generate_world(level) {
     let world_data = generate_objects(spawn_locations);
     return world_data;
 }
-generate_world(1);
 
 function generate_room_data() {
     let room_count =
@@ -136,6 +135,9 @@ function generate_rooms(rooms_data) {
                     case "S":
                         cell_type = "player";
                         break;
+                    default:
+                        cell_type = "none";
+                        break;
                 }
                 if (cell_type !== "none") {
                     spawn_locations[cell_type].push([x_cell_pos, y_cell_pos]);
@@ -195,4 +197,43 @@ function generate_rooms(rooms_data) {
     return spawn_locations;
 }
 
-function generate_objects(spawn) {}
+function generate_objects(spawn_locations) {
+    let enemy_count =
+        START_ENEMY_COUNT + ENEMY_COUNT_INCREASE_PER_LEVEL * cur_level;
+    let enemies_locations = spawn_locations.enemy_spawn_locations;
+    let enemies = [];
+    for (let i = 0; i < enemy_count; i++) {
+        if (enemies_locations.length === 0) {
+            break;
+        }
+        const enemy_ind = Math.floor(Math.random() * enemies_locations.length);
+        enemies.push(enemies_locations[enemy_ind]);
+        enemies_locations.splice(enemy_ind, 1);
+    }
+
+    let pickups_locations = spawn_locations.pickup_spawn_locations;
+    let pickups = [];
+    for (let j = 0; j < spawn_locations.pickup_spawn_locations.length; j++) {
+        const chance = Math.random();
+        if (chance >= 0.25) {
+            const pickup_ind = Math.floor(
+                Math.random() * pickups_locations.length
+            );
+            pickups.push(pickups_locations[pickup_ind]);
+            pickups_locations.splice(pickup_ind, 1);
+        }
+    }
+
+    let data = {
+        walls: spawn_locations.walls,
+        enemies: enemies,
+        pickups: pickups,
+        player: spawn_locations.player,
+        upStairs: spawn_locations.up_coords,
+        downStairs: spawn_locations.down_coords,
+    };
+
+    return data;
+}
+
+module.exports = { generate_world };
