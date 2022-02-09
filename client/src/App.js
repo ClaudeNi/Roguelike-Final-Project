@@ -1,9 +1,13 @@
 import React from "react";
-import mapBuilder from "./utils/mapBuilder";
+import Map from "./components/Map/Map";
 import "./App.css";
 
 function App() {
-    return <div className="App">hello world</div>;
+    return (
+        <div className="App">
+            <Map />
+        </div>
+    );
 }
 
 export default App;

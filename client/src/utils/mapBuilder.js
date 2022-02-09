@@ -1,28 +1,28 @@
 const rooms = require("./rooms");
 const ROT = require("rot-js");
 
-let cur_level = 1;
+let curLevel = 1;
 
 const START_ROOM_COUNT = 3;
 const ROOM_COUNT_INCREASE_PER_LEVEL = 2;
 
-const CELL_SIZE = 16;
 const ROOM_SIZE = 8;
 
 const START_ENEMY_COUNT = 2;
 const ENEMY_COUNT_INCREASE_PER_LEVEL = 1;
 
 function generate_world(level) {
-    cur_level = level;
-    let rooms_data = generate_room_data();
-    let spawn_locations = generate_rooms(rooms_data);
-    let world_data = generate_objects(spawn_locations);
-    return world_data;
+    curLevel = level;
+    let roomsData = generate_room_data();
+    let newRoomsData = findMin(roomsData);
+    let spawnLocations = generate_rooms(newRoomsData);
+    let worldData = generate_objects(spawnLocations);
+    return worldData;
 }
 
 function generate_room_data() {
     let room_count =
-        START_ROOM_COUNT + cur_level + ROOM_COUNT_INCREASE_PER_LEVEL;
+        START_ROOM_COUNT + curLevel + ROOM_COUNT_INCREASE_PER_LEVEL;
     let rooms_data = {
         "0,0": {
             type: "startRoom",
@@ -89,6 +89,31 @@ function get_available_room_slots(rooms, coords) {
     return empty_available_rooms;
 }
 
+function findMin(roomsData) {
+    let minX = 0,
+        minY = 0;
+    let newRoomsData = {};
+    for (let room of Object.keys(roomsData)) {
+        let coords = room.split(",");
+        if (parseInt(coords[0]) < minX) {
+            minX = parseInt(coords[0]);
+        }
+        if (parseInt(coords[1]) < minY) {
+            minY = parseInt(coords[1]);
+        }
+    }
+    for (let room of Object.keys(roomsData)) {
+        let coords = room.split(",");
+        let coord = `${parseInt(coords[0]) + Math.abs(minX)},${
+            parseInt(coords[1]) + Math.abs(minY)
+        }`;
+        newRoomsData[coord] = roomsData[room];
+        newRoomsData[coord].coords = coord;
+    }
+
+    return newRoomsData;
+}
+
 function generate_rooms(rooms_data) {
     let spawn_locations = {
         walls: [],
@@ -97,6 +122,7 @@ function generate_rooms(rooms_data) {
         up_coords: [],
         down_coords: [],
         player: [],
+        air: [],
     };
 
     const iterable_rooms = rooms.rooms;
@@ -104,18 +130,20 @@ function generate_rooms(rooms_data) {
     iterable_rooms.endRoom = rooms.endRoom;
 
     for (let room_data of Object.values(rooms_data)) {
-        let coords = room_data.coords;
+        let coords = room_data.coords.split(",");
         let type = room_data.type;
         let x_pos = 0;
         let y_pos = 0;
-        let x_cell_pos = coords[0] * ROOM_SIZE + x_pos;
-        let y_cell_pos = coords[1] * ROOM_SIZE + y_pos;
+        let x_cell_pos = parseInt(coords[0]) * ROOM_SIZE + x_pos;
+        let y_cell_pos = parseInt(coords[1]) * ROOM_SIZE + y_pos;
+        let spacesY = 0;
         for (let y of iterable_rooms[type]) {
             x_pos = 0;
+            let spacesX = 0;
             for (let x of y) {
-                x_cell_pos = coords[0] * ROOM_SIZE + x_pos;
-                y_cell_pos = coords[1] * ROOM_SIZE + y_pos;
-                let cell_type = "none";
+                x_cell_pos = parseInt(coords[0]) * ROOM_SIZE + x_pos;
+                y_cell_pos = parseInt(coords[1]) * ROOM_SIZE + y_pos;
+                let cell_type = "";
                 switch (x) {
                     case "W":
                         cell_type = "walls";
@@ -135,63 +163,71 @@ function generate_rooms(rooms_data) {
                     case "S":
                         cell_type = "player";
                         break;
+                    case "A":
+                        cell_type = "air";
+                        break;
                     default:
-                        cell_type = "none";
+                        cell_type = "";
+                        spacesX++;
                         break;
                 }
-                if (cell_type !== "none") {
-                    spawn_locations[cell_type].push([x_cell_pos, y_cell_pos]);
+                if (cell_type !== "") {
+                    spawn_locations[cell_type].push(
+                        `${x_cell_pos - spacesX},${y_cell_pos - spacesY}`
+                    );
                 }
+
                 x_pos++;
             }
+            spacesY++;
             y_pos++;
         }
 
-        let room_at_left =
-            rooms_data[`${coords[0] - 1},${coords[1]}`] !== undefined;
-        let room_at_right =
-            rooms_data[`${coords[0] + 1},${coords[1]}`] !== undefined;
-        let room_at_top =
-            rooms_data[`${coords[0]},${coords[1] - 1}`] !== undefined;
-        let room_at_bottom =
-            rooms_data[`${coords[0]},${coords[1] + 1}`] !== undefined;
+        // let room_at_left =
+        //     rooms_data[`${coords[0] - 1},${coords[1]}`] !== undefined;
+        // let room_at_right =
+        //     rooms_data[`${coords[0] + 1},${coords[1]}`] !== undefined;
+        // let room_at_top =
+        //     rooms_data[`${coords[0]},${coords[1] - 1}`] !== undefined;
+        // let room_at_bottom =
+        //     rooms_data[`${coords[0]},${coords[1] + 1}`] !== undefined;
 
-        if (room_at_left) {
-            for (let i = 3; i < 5; i++) {
-                const ind = spawn_locations.walls.indexOf([
-                    coords[0] * ROOM_SIZE,
-                    coords[1] * ROOM_SIZE + i,
-                ]);
-                spawn_locations.walls.splice(ind, 1);
-            }
-        }
-        if (room_at_right) {
-            for (let i = 3; i < 5; i++) {
-                const ind = spawn_locations.walls.indexOf([
-                    coords[0] * ROOM_SIZE + ROOM_SIZE - 1,
-                    coords[1] * ROOM_SIZE + i,
-                ]);
-                spawn_locations.walls.splice(ind, 1);
-            }
-        }
-        if (room_at_top) {
-            for (let i = 3; i < 5; i++) {
-                const ind = spawn_locations.walls.indexOf([
-                    coords[0] * ROOM_SIZE + i,
-                    coords[1] * ROOM_SIZE,
-                ]);
-                spawn_locations.walls.splice(ind, 1);
-            }
-        }
-        if (room_at_bottom) {
-            for (let i = 3; i < 5; i++) {
-                const ind = spawn_locations.walls.indexOf([
-                    coords[0] * ROOM_SIZE + i,
-                    coords[1] * ROOM_SIZE + ROOM_SIZE - 1,
-                ]);
-                spawn_locations.walls.splice(ind, 1);
-            }
-        }
+        // if (room_at_left) {
+        //     for (let i = 3; i < 5; i++) {
+        //         const ind = spawn_locations.walls.indexOf([
+        //             coords[0] * ROOM_SIZE,
+        //             coords[1] * ROOM_SIZE + i,
+        //         ]);
+        //         spawn_locations.walls.splice(ind, 1);
+        //     }
+        // }
+        // if (room_at_right) {
+        //     for (let i = 3; i < 5; i++) {
+        //         const ind = spawn_locations.walls.indexOf([
+        //             coords[0] * ROOM_SIZE + ROOM_SIZE - 1,
+        //             coords[1] * ROOM_SIZE + i,
+        //         ]);
+        //         spawn_locations.walls.splice(ind, 1);
+        //     }
+        // }
+        // if (room_at_top) {
+        //     for (let i = 3; i < 5; i++) {
+        //         const ind = spawn_locations.walls.indexOf([
+        //             coords[0] * ROOM_SIZE + i,
+        //             coords[1] * ROOM_SIZE,
+        //         ]);
+        //         spawn_locations.walls.splice(ind, 1);
+        //     }
+        // }
+        // if (room_at_bottom) {
+        //     for (let i = 3; i < 5; i++) {
+        //         const ind = spawn_locations.walls.indexOf([
+        //             coords[0] * ROOM_SIZE + i,
+        //             coords[1] * ROOM_SIZE + ROOM_SIZE - 1,
+        //         ]);
+        //         spawn_locations.walls.splice(ind, 1);
+        //     }
+        // }
     }
 
     return spawn_locations;
@@ -199,8 +235,8 @@ function generate_rooms(rooms_data) {
 
 function generate_objects(spawn_locations) {
     let enemy_count =
-        START_ENEMY_COUNT + ENEMY_COUNT_INCREASE_PER_LEVEL * cur_level;
-    let enemies_locations = spawn_locations.enemy_spawn_locations;
+        START_ENEMY_COUNT + ENEMY_COUNT_INCREASE_PER_LEVEL * curLevel;
+    let enemies_locations = [...spawn_locations.enemy_spawn_locations];
     let enemies = [];
     for (let i = 0; i < enemy_count; i++) {
         if (enemies_locations.length === 0) {
@@ -211,7 +247,7 @@ function generate_objects(spawn_locations) {
         enemies_locations.splice(enemy_ind, 1);
     }
 
-    let pickups_locations = spawn_locations.pickup_spawn_locations;
+    let pickups_locations = [...spawn_locations.pickup_spawn_locations];
     let pickups = [];
     for (let j = 0; j < spawn_locations.pickup_spawn_locations.length; j++) {
         const chance = Math.random();
@@ -236,4 +272,4 @@ function generate_objects(spawn_locations) {
     return data;
 }
 
-module.exports = { generate_world };
+module.exports = generate_world;
