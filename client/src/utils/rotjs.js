@@ -1,35 +1,8 @@
 const ROT = require("rot-js");
-// const imgsrc = require("./sprite-sheet.png");
-
-// // var image = new Image();
-// // image.src = imgsrc;
-
-// var tileSet = document.createElement("img");
-// tileSet.src = "./sprite-sheet.png";
-
-// var options = {
-//     layout: "tile-gl",
-//     bg: "transparent",
-//     tileWidth: 16,
-//     tileHeight: 16,
-//     tileSet: imgsrc,
-//     tileMap: {
-//         ".": [1, 1],
-//         // "@": [1, 1],
-//         "#": [1, 18],
-//     },
-// };
 
 var Game = {
     display: null,
     map: {},
-
-    init: function () {
-        this.display = new ROT.Display();
-        document.querySelector(".map").appendChild(this.display.getContainer());
-
-        this._generateMap();
-    },
 
     _generateMap: function () {
         this.map = {};
@@ -48,11 +21,10 @@ var Game = {
         digger.create(digCallback.bind(this));
         this.generateWalls();
 
-        return this.map;
-
-        // this._generateBoxes(freeCells);
-
-        // this._drawWholeMap();
+        return {
+            map: this.map,
+            freeCells: freeCells,
+        };
     },
 
     generateWalls: function () {
@@ -92,23 +64,6 @@ var Game = {
             }
         });
     },
-
-    // _generateBoxes: function(freeCells) {
-    //     for (var i=0;i<10;i++) {
-    //         var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
-    //         var key = freeCells.splice(index, 1)[0];
-    //         this.map[key] = "*";
-    //     }
-    // },
-
-    // _drawWholeMap: function () {
-    //     for (var key in this.map) {
-    //         var parts = key.split(",");
-    //         var x = parseInt(parts[0]);
-    //         var y = parseInt(parts[1]);
-    //         this.display.draw(x, y, this.map[key]);
-    //     }
-    // },
 };
 
 exports.module = Game;

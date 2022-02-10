@@ -12,6 +12,9 @@ const Cell = (props) => {
     const findType = () => {
         let cellType = props.map[`${props.x},${props.y}`];
         switch (cellType) {
+            case "P":
+                setclassBG("player-1");
+                break;
             case ".":
                 setclassBG("floor");
                 break;

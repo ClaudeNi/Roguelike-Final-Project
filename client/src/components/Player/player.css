@@ -1,0 +1,10 @@
+.pixel {
+    image-rendering: pixelated;
+}
+
+.player-1 {
+    position: absolute;
+    background: url("../../assets/sprite-sheet.png") no-repeat -1px -1px;
+    width: 16px;
+    height: 16px;
+}

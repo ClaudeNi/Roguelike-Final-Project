@@ -1,0 +1,6 @@
+.camera {
+    height: 50vh;
+    width: 50vmin;
+    overflow: hidden;
+    /* transform: scale(3); */
+}

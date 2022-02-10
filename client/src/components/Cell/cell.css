@@ -8,34 +8,31 @@
 }
 
 .floor {
-    background-color: #ccc;
+    /* background-color: #ccc; */
     height: 16px;
     width: 16px;
 }
 
 .wall-1 {
-    /* background-image: url("../../assets/sprite-sheet.png");
-    background-repeat: no-repeat;
-    background-position: -1px -19px; */
     background: url("../../assets/sprite-sheet.png") no-repeat -1px -19px;
     width: 16px;
     height: 16px;
 }
 
 .wall-2 {
-    background: url("../../assets/sprite-sheet.png") no-repeat 19 19;
+    background: url("../../assets/sprite-sheet.png") no-repeat -19px -19px;
     width: 16px;
     height: 16px;
 }
 
 .wall-3 {
-    background: url("../../assets/sprite-sheet.png") no-repeat 36 19;
+    background: url("../../assets/sprite-sheet.png") no-repeat -36px -19px;
     width: 16px;
     height: 16px;
 }
 
 .wall-4 {
-    background: url("../../assets/sprite-sheet.png") no-repeat 53 19;
+    background: url("../../assets/sprite-sheet.png") no-repeat -53px -19px;
     width: 16px;
     height: 16px;
 }

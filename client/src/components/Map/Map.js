@@ -5,6 +5,7 @@ import "./map.css";
 
 const Map = () => {
     const [map, setMap] = useState({});
+    const [freeCells, setFreeCells] = useState([]);
     // const [level, setLevel] = useState(1);
     const [maxX, setMaxX] = useState(0);
     const [maxY, setMaxY] = useState(0);
@@ -16,6 +17,19 @@ const Map = () => {
     useEffect(() => {
         findMax();
     }, [map]);
+
+    useEffect(() => {
+        placePlayer();
+    }, [freeCells]);
+
+    const placePlayer = () => {
+        const ind = Math.floor(Math.random() * (freeCells.length - 1));
+        const coords = freeCells[ind];
+        console.log(coords);
+        const newMap = map;
+        newMap[coords] = "P";
+        setMap(newMap);
+    };
 
     const findMax = () => {
         let tempMaxX = 0;
@@ -51,6 +65,7 @@ const Map = () => {
         <div className="map">
             map
             <div
+                className="map-grid"
                 style={{
                     display: "grid",
                     gridTemplateColumns: `repeat(${maxX + 1}, 16px)`,
@@ -64,7 +79,12 @@ const Map = () => {
             <button
                 onClick={() => {
                     setMap({});
-                    setMap(ROT.module._generateMap());
+                    setFreeCells([]);
+                    setTimeout(() => {
+                        const mapInfo = ROT.module._generateMap();
+                        setMap(mapInfo.map);
+                        setFreeCells(mapInfo.freeCells);
+                    }, 0);
                 }}
             >
                 get map

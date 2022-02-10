@@ -1,11 +1,11 @@
 import React from "react";
-import Map from "./components/Map/Map";
+import Camera from "./components/Camera/Camera";
 import "./App.css";
 
 function App() {
     return (
         <div className="App">
-            <Map />
+            <Camera />
         </div>
     );
 }
