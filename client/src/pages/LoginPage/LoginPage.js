@@ -23,6 +23,7 @@ const LoginPage = () => {
     const switchComp = () => {
         setLoginPhase(!loginPhase);
     };
+
     return (
         <div className="login-page">
             <img

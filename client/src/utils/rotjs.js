@@ -14,6 +14,13 @@ let Game = {
         this._generateMap();
     },
 
+    setMap: function (map, player) {
+        this.map = map;
+        this.player = player;
+        this.display.clear();
+        this._drawWholeMap();
+    },
+
     _generateMap: function () {
         this.display.clear();
         this.resetAll();

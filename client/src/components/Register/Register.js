@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import api from "../../api/api";
+import { useHistory } from "react-router-dom";
 import "./register.css";
 
 const Register = (props) => {
+    let history = useHistory();
+
     const [emailValue, setEmailValue] = useState("");
     const [passwordValue, setPasswordValue] = useState("");
     const [repeatPasswordValue, setRepeatPasswordValue] = useState("");
@@ -10,6 +14,26 @@ const Register = (props) => {
         setEmailValue("");
         setPasswordValue("");
         setRepeatPasswordValue("");
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        registerUser();
+    };
+
+    const registerUser = async () => {
+        const response = await api.post("/users", {
+            email: emailValue,
+            password: passwordValue,
+            rePassword: repeatPasswordValue,
+        });
+        console.log("response", response);
+
+        if (response.data === true) {
+            window.sessionStorage.setItem("isLoggedIn", true);
+            window.sessionStorage.setItem("email", emailValue);
+            history.push("/title");
+        }
     };
 
     return (
@@ -43,6 +67,7 @@ const Register = (props) => {
                     className="submit-btn"
                     type={"submit"}
                     value="Register"
+                    onClick={handleSubmit}
                 ></input>
             </form>
             <span>

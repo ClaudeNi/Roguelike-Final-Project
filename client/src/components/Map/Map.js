@@ -10,19 +10,27 @@ const Map = (props) => {
     const [saveBtnText, setSaveBtnText] = useState("Save Game");
     const [showTiles, setShowTiles] = useState(false);
     const [map, setMap] = useState({});
+    const [player, setPlayer] = useState(null);
     const [maxX, setMaxX] = useState(0);
     const [maxY, setMaxY] = useState(0);
 
     const gridRef = useRef();
     const canvasRef = useRef();
-    const saveRef = useRef();
 
     useEffect(() => {
-        ROT.module.init(canvasRef.current);
-        setMap(ROT.module.map);
+        if (window.sessionStorage.getItem("load") === "true") {
+            loadSaveData();
+            ROT.module.init(canvasRef.current);
+            // ROT.module.setMap(map, player);
+        } else {
+            ROT.module.init(canvasRef.current, {}, null);
+            ROT.module._generateMap();
+            setMap(ROT.module.map);
+        }
     }, []);
 
     useEffect(() => {
+        ROT.module.setMap(map, player);
         findMax();
     }, [map]);
 
@@ -42,6 +50,13 @@ const Map = (props) => {
         }
     }, []);
 
+    const loadSaveData = async () => {
+        const email = window.sessionStorage.getItem("email");
+        const response = await api.get(`/users/load/${email}`);
+        setMap(response.data.map);
+        setPlayer(response.data.player);
+    };
+
     const checkIfLoggedIn = () => {
         const myStorage = window.sessionStorage;
         if (
@@ -56,9 +71,10 @@ const Map = (props) => {
 
     const saveMap = async () => {
         if (checkIfLoggedIn()) {
-            const id = "abc";
-            const response = await api.patch(`/users/${id}`, {
+            const email = window.sessionStorage.getItem("email");
+            const response = await api.patch(`/users/save/${email}`, {
                 map: ROT.module.map,
+                player: ROT.module.player,
             });
             console.log(response);
         }

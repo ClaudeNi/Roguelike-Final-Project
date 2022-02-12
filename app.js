@@ -4,7 +4,9 @@ const apiRouter = require("./src/routes/apiRoutes");
 const app = express();
 const PORT = process.env.PORT || 5000;
 const path = require("path");
+const cors = require("cors");
 
+app.use(cors());
 app.use(express.json());
 app.use("/api", apiRouter);
 
@@ -14,9 +16,9 @@ const publicDirectoryPath = path.join(__dirname, "client/build");
 // Setup static directory to serve
 app.use(express.static(publicDirectoryPath));
 
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname + "/client/build/index.html"));
-});
+// app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname + "/client/build/index.html"));
+// });
 
 app.listen(PORT, () => {
     console.log(`Server is up on port: ${PORT}`);

@@ -26,6 +26,14 @@ const HomePage = () => {
         return true;
     };
 
+    const handleNewGame = () => {
+        window.sessionStorage.setItem("load", false);
+    };
+
+    const handleLoad = () => {
+        window.sessionStorage.setItem("load", true);
+    };
+
     return (
         <div className="homepage">
             <div className="top-container">
@@ -42,14 +50,14 @@ const HomePage = () => {
             </div>
             <div className="buttons-container">
                 <Link to="/game" style={{ textDecoration: "none" }}>
-                    <Btn text={"New Game"} />
+                    <Btn text={"New Game"} handleClick={handleNewGame} />
                 </Link>
                 <Link
                     ref={loadRef}
                     to="/game"
                     style={{ textDecoration: "none" }}
                 >
-                    <Btn text={loadBtnText} />
+                    <Btn text={loadBtnText} handleClick={handleLoad} />
                 </Link>
                 <Link to="/" style={{ textDecoration: "none" }}>
                     <Btn text={"Exit Game"} />

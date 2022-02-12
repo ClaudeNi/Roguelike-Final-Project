@@ -1,13 +1,34 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import api from "../../api/api";
 import "./login.css";
 
 const Login = (props) => {
+    let history = useHistory();
+
     const [emailValue, setEmailValue] = useState("");
     const [passwordValue, setPasswordValue] = useState("");
 
     const clearInputs = () => {
         setEmailValue("");
         setPasswordValue("");
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        loginUser();
+    };
+
+    const loginUser = async () => {
+        const response = await api.post(`users/${emailValue}`, {
+            password: passwordValue,
+        });
+        console.log(response);
+        if (response.data === true) {
+            window.sessionStorage.setItem("isLoggedIn", true);
+            window.sessionStorage.setItem("email", emailValue);
+            history.push("/title");
+        }
     };
 
     return (
@@ -34,6 +55,7 @@ const Login = (props) => {
                     className="submit-btn"
                     type={"submit"}
                     value="Login"
+                    onClick={handleSubmit}
                 ></input>
             </form>
             <span>
