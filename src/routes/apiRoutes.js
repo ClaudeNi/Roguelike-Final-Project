@@ -1,13 +1,13 @@
 const express = require("express");
 const {
-    getSaveData,
+    loadSaveData,
     addUser,
     uploadSaveData,
 } = require("../controllers/UserControllers");
 
 const apiRouter = express.Router();
 //GET Methods
-apiRouter.get("/users/:id", getSaveData);
+apiRouter.get("/users/:id", loadSaveData);
 //POST Methods
 apiRouter.post("/users", addUser);
 //PATCH Methods

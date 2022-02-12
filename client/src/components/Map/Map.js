@@ -57,7 +57,7 @@ const Map = (props) => {
     const saveMap = async () => {
         if (checkIfLoggedIn()) {
             const id = "abc";
-            const response = await api.patch(`${id}/save`, {
+            const response = await api.patch(`/users/${id}`, {
                 map: ROT.module.map,
             });
             console.log(response);
