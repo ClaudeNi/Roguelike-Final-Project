@@ -199,7 +199,7 @@ let Game = {
     },
 };
 
-var Player = function (x, y) {
+var Player = function (x, y, lvl) {
     this._x = x;
     this._y = y;
     this._draw();
@@ -208,9 +208,11 @@ var Player = function (x, y) {
 Player.prototype.getSpeed = function () {
     return 100;
 };
+
 Player.prototype.getX = function () {
     return this._x;
 };
+
 Player.prototype.getY = function () {
     return this._y;
 };
@@ -270,10 +272,9 @@ Player.prototype.handleEvent = function (e) {
         Game.map[this._x + "," + this._y],
         color
     );
-    // Game.map[`${this._X},${this._Y}`] = ".";
+
     this._x = newX;
     this._y = newY;
-    // Game.map[`${newX},${newY}`] = "P";
     this._draw();
     window.removeEventListener("keydown", this);
     Game.engine.unlock();

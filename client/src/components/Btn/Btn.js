@@ -3,7 +3,7 @@ import "./btn.css";
 
 const Btn = (props) => {
     return (
-        <div role={"button"} className="btn">
+        <div role={"button"} className="btn" onClick={props.handleClick}>
             {props.text}
         </div>
     );

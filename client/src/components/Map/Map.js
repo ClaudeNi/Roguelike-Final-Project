@@ -1,18 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import Cell from "../Cell/Cell";
+import Btn from "../Btn/Btn";
 import ROT from "../../utils/rotjs";
+import api from "../../api/api";
 import "./map.css";
+import { Link } from "react-router-dom";
 
 const Map = (props) => {
+    const [saveBtnText, setSaveBtnText] = useState("Save Game");
     const [showTiles, setShowTiles] = useState(false);
     const [map, setMap] = useState({});
-    const [freeCells, setFreeCells] = useState([]);
-    // const [level, setLevel] = useState(1);
     const [maxX, setMaxX] = useState(0);
     const [maxY, setMaxY] = useState(0);
 
     const gridRef = useRef();
     const canvasRef = useRef();
+    const saveRef = useRef();
 
     useEffect(() => {
         ROT.module.init(canvasRef.current);
@@ -34,12 +37,32 @@ const Map = (props) => {
     }, [showTiles]);
 
     useEffect(() => {
-        window.addEventListener("keypress", (e) => {
-            let key = e.key;
-            // ROT.module.movePlayer(e);
-            setMap(ROT.module.map);
-        });
-    });
+        if (!checkIfLoggedIn()) {
+            setSaveBtnText("Login to save game");
+        }
+    }, []);
+
+    const checkIfLoggedIn = () => {
+        const myStorage = window.sessionStorage;
+        if (
+            myStorage.getItem("isLoggedIn") === null ||
+            myStorage.getItem("isLoggedIn") === "false"
+        ) {
+            myStorage.setItem("isLoggedIn", false);
+            return false;
+        }
+        return true;
+    };
+
+    const saveMap = async () => {
+        if (checkIfLoggedIn()) {
+            const id = "abc";
+            const response = await api.patch(`${id}/save`, {
+                map: ROT.module.map,
+            });
+            console.log(response);
+        }
+    };
 
     const findMax = () => {
         let tempMaxX = 0;
@@ -73,13 +96,18 @@ const Map = (props) => {
 
     return (
         <div className="map">
-            <button
-                onClick={() => {
-                    setShowTiles(!showTiles);
-                }}
-            >
-                Change Appearance
-            </button>
+            <div className="top-btns-container">
+                <Btn
+                    text="Change Style"
+                    handleClick={() => {
+                        setShowTiles(!showTiles);
+                    }}
+                />
+                <Btn text={saveBtnText} handleClick={saveMap} />
+                <Link to={"/title"} style={{ textDecoration: "none" }}>
+                    <Btn text="Exit Game" />
+                </Link>
+            </div>
             <div
                 ref={gridRef}
                 className="map-grid"
@@ -87,8 +115,6 @@ const Map = (props) => {
                     display: "grid",
                     gridTemplateColumns: `repeat(${maxX + 1}, 16px)`,
                     gridTemplateRows: `repeat(${maxY + 1}, 16px)`,
-                    // width: `${16 * maxX}px`,
-                    // height: `${16 * maxY}px`,
                 }}
             >
                 {displayMap()}
