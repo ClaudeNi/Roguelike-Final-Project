@@ -1,6 +1,19 @@
 .camera {
     height: 50vh;
     width: 50vmin;
-    overflow: hidden;
-    /* transform: scale(3); */
+    /* overflow: hidden; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* transform: scale(2); */
+}
+
+.camera-player {
+    image-rendering: pixelated;
+    position: absolute;
+    top: calc(50vh);
+    left: calc(50vw);
+    height: 16px;
+    width: 16px;
+    z-index: 5;
 }

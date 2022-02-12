@@ -1,3 +1,16 @@
+@font-face {
+    font-family: "Minecraft";
+    font-style: normal;
+    font-weight: 400;
+    src: url("./assets/fonts/Minecraft.woff") format("woff"),
+        url("./assets/fonts/Minecraft.ttf") format("tff");
+}
+
+* {
+    font-family: "Minecraft";
+    color: #fff;
+}
+
 .App {
     display: flex;
     justify-content: center;

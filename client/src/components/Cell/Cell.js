@@ -3,7 +3,6 @@ import "./cell.css";
 
 const Cell = (props) => {
     const [classBG, setclassBG] = useState("gray");
-    // const [type, setType] = useState("");
 
     useEffect(() => {
         findType();
@@ -12,14 +11,20 @@ const Cell = (props) => {
     const findType = () => {
         let cellType = props.map[`${props.x},${props.y}`];
         switch (cellType) {
-            case "P":
-                setclassBG("player-1");
-                break;
             case ".":
                 setclassBG("floor");
                 break;
             case "#":
                 setclassBG("wall-1");
+                break;
+            case "P":
+                setclassBG("player-1");
+                break;
+            case "E":
+                setclassBG("enemy-1");
+                break;
+            case "S":
+                setclassBG("staircase");
                 break;
             default:
                 setclassBG("empty");

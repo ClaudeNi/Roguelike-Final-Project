@@ -8,9 +8,14 @@
 }
 
 .floor {
-    /* background-color: #ccc; */
     height: 16px;
     width: 16px;
+}
+
+.player-1 {
+    background: url("../../assets/sprite-sheet.png") no-repeat -1px -1px;
+    width: 16px;
+    height: 16px;
 }
 
 .wall-1 {
@@ -33,6 +38,18 @@
 
 .wall-4 {
     background: url("../../assets/sprite-sheet.png") no-repeat -53px -19px;
+    width: 16px;
+    height: 16px;
+}
+
+.staircase {
+    background: url("../../assets/sprite-sheet.png") no-repeat -1px -36px;
+    width: 16px;
+    height: 16px;
+}
+
+.enemy-1 {
+    background: url("../../assets/sprite-sheet.png") no-repeat -1px -53px;
     width: 16px;
     height: 16px;
 }

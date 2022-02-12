@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Cell from "../Cell/Cell";
 import ROT from "../../utils/rotjs";
 import "./map.css";
 
-const Map = () => {
+const Map = (props) => {
+    const [showTiles, setShowTiles] = useState(false);
     const [map, setMap] = useState({});
     const [freeCells, setFreeCells] = useState([]);
     // const [level, setLevel] = useState(1);
     const [maxX, setMaxX] = useState(0);
     const [maxY, setMaxY] = useState(0);
 
+    const gridRef = useRef();
+    const canvasRef = useRef();
+
     useEffect(() => {
-        setMap(ROT.module._generateMap());
+        ROT.module.init(canvasRef.current);
+        setMap(ROT.module.map);
     }, []);
 
     useEffect(() => {
@@ -19,17 +24,22 @@ const Map = () => {
     }, [map]);
 
     useEffect(() => {
-        placePlayer();
-    }, [freeCells]);
+        if (showTiles) {
+            gridRef.current.style.display = "grid";
+            canvasRef.current.style.display = "none";
+        } else {
+            gridRef.current.style.display = "none";
+            canvasRef.current.style.display = "block";
+        }
+    }, [showTiles]);
 
-    const placePlayer = () => {
-        const ind = Math.floor(Math.random() * (freeCells.length - 1));
-        const coords = freeCells[ind];
-        console.log(coords);
-        const newMap = map;
-        newMap[coords] = "P";
-        setMap(newMap);
-    };
+    useEffect(() => {
+        window.addEventListener("keypress", (e) => {
+            let key = e.key;
+            // ROT.module.movePlayer(e);
+            setMap(ROT.module.map);
+        });
+    });
 
     const findMax = () => {
         let tempMaxX = 0;
@@ -63,8 +73,15 @@ const Map = () => {
 
     return (
         <div className="map">
-            map
+            <button
+                onClick={() => {
+                    setShowTiles(!showTiles);
+                }}
+            >
+                Change Appearance
+            </button>
             <div
+                ref={gridRef}
                 className="map-grid"
                 style={{
                     display: "grid",
@@ -76,27 +93,7 @@ const Map = () => {
             >
                 {displayMap()}
             </div>
-            <button
-                onClick={() => {
-                    setMap({});
-                    setFreeCells([]);
-                    setTimeout(() => {
-                        const mapInfo = ROT.module._generateMap();
-                        setMap(mapInfo.map);
-                        setFreeCells(mapInfo.freeCells);
-                    }, 0);
-                }}
-            >
-                get map
-            </button>
-            <button
-                onClick={() => {
-                    console.log(map);
-                    console.log(maxX, maxY);
-                }}
-            >
-                click
-            </button>
+            <div ref={canvasRef}></div>
         </div>
     );
 };

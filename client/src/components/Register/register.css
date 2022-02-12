@@ -1,0 +1,22 @@
+.register-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.register-form input {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    padding: 0.3rem;
+    color: #000;
+}
