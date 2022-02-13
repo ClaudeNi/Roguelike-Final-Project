@@ -18,6 +18,7 @@ const User = mongoose.model("User", {
     },
     saveData: {
         type: Object,
+        default: {},
     },
 });
 module.exports = User;
